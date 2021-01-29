@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Form, Nav, Navbar,Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import './Header.css';
 const Header = () => {
     return (
@@ -26,10 +27,14 @@ const Header = () => {
    
       <Button className="btn btn-lg" variant="primary">Register</Button>
       </Form>
-      <Form inline className="mr-3">
-   
-      <Button className="btn btn-lg"  variant="dark">Search</Button>
-      </Form>
+     
+      <Nav.Link eventKey={2} href="#memes">
+              <Link to="/adminPannel">
+                <Button className="btn btn-lg" variant="dark">
+                  Admin
+                </Button>
+              </Link>
+      </Nav.Link>
   </Navbar>
         </div>
     );

@@ -1,6 +1,8 @@
 import React from 'react';
+import {Card} from "react-bootstrap";
+import { useHistory } from 'react-router-dom';
 
-const TaskDetails = () => {
+const TaskDetails = (props) => {
     let history = useHistory();
   let handleTaskReg = (taskID) => {
     history.push(`/register/${taskID}`);
@@ -23,7 +25,7 @@ const TaskDetails = () => {
       className="col-xl-2 col-md-3 col-sm-12  my-3 mx-5"
       style={{ float: "left", cursor: "pointer" }}
     >
-      <Card style={{ width: "18rem" }}>
+      <Card  style={{ width: "18rem" }}>
         <Card.Img variant="top" src={img} />
         <Card.Body
           style={{ backgroundColor: colors[Math.floor(Math.random() * 7)] }}

@@ -3,21 +3,44 @@ import { BrowserRouter as Router,
   Route, 
  Switch } from 'react-router-dom';
 import './App.css';
-import Home from './Components/Home/Home';
-export const UserContext = createContext()
+import Auth from './Components/Auth/Auth';
+import Error from './Components/Error/Error';
+
+import PrivateRoute from './Components/PrivateRoute/PrivateRoute';
+import Register from './Components/RegisterFrom/Register';
+import AdminPannel from './Pages/Admin/AdminPannel';
+import Home from './Pages/Home';
+
+
+export const UserContext = createContext();
 function App() {
-  const [user,setUser] = useState({isSignedUp:true})
+  const [loggedInUser, setLoggedInUser] = useState({});
+  const [volunteer, setVolunteer] = useState([]);
   return (
-    <UserContext.Provider  value={[user,setUser]}>
+    <UserContext.Provider  value={{ loggedInUser, setLoggedInUser, volunteer, setVolunteer }} >
+     
     <Router>
        <Switch>
-          <Route  path="/home">
-            <Home></Home>
-          </Route>
+
          
+        
+         <PrivateRoute exact path="/register/:name">
+           <Register></Register>
+         </PrivateRoute>
+        
+        < Route path="/Auth">
+          <Auth> </Auth>
+         </Route>
+         <PrivateRoute path="/adminPannel">
+         <AdminPannel></AdminPannel>
+         </PrivateRoute>
          <Route exact path="/">
-          <Home></Home>
+         <Home> </Home>
         </Route>
+        
+        <Route path="*">
+           <Error></Error>
+          </Route>
         </Switch>
        </Router>
 

@@ -1,15 +1,14 @@
-
 import React from 'react';
 import { Container, FormControl, Button, InputGroup } from 'react-bootstrap';
 import background from '../../images/backgroud.jpg';
-import Header from '../Header/Header';
-const Home = () => {
+const SearchTasks = () => {
     return (
         <div>
             <div style={{background:`linear-gradient(to bottom,
                  rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)),
-                 url(${background}) `, height:'496px'}}>
-                     <Header> </Header>
+                 url(${background}) `, height:'700px'}}>
+                    
+
                   <Container style={{textAlign:'center',padding:'30px 0'}}>
                  <h2 style={{margin:'20px'}}>  I GROW BY HELPING PEOPLE IN NEED </h2>
                  <InputGroup>
@@ -25,11 +24,11 @@ const Home = () => {
                  </InputGroup>
                  
                   </Container>
+                
                  </div>
-
                  
         </div>
     );
 };
 
-export default Home;
+export default SearchTasks;

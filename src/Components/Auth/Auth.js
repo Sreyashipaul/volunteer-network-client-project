@@ -1,99 +1,71 @@
-import React from 'react';
-import { FormControl, FormGroup,  Grid,  Input, InputLabel } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import firebaseConfig from './firebaseConfig';
-import firebase from 'firebase';
-import google from '../../images/google.png';
-firebase.initializeApp(firebaseConfig);
+import  firebase from "firebase/app";
+import "firebase/auth";
+import { UserContext } from '../../App';
+import Header from '../Header/Header';
 
-export default function Auth() {
-    {document.title='Volunteer Network | Authentication'}
-    const [user,setUser]=useContext(UserContext)
-    const history=useHistory()
-  
-    //sign in with google provider
-    const googleSigninHandler = () =>{
-      const provider = new firebase.auth.GoogleAuthProvider();
-      firebase.auth().signInWithPopup(provider)
-      .then(result=>{
-        setUser({...user, email:result.user.email, name:result.user.displayName, uid:result.user.uid, isSignedIn:true})
-        history.location.state ? history.replace(history.location.state.pathname)
-        : history.goBack()
+
+const Auth = ()=> {
+  if (firebase.apps.length === 0) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
+  const { loggedInUser, setLoggedInUser } = useContext(UserContext);
+
+  const history = useHistory();
+  const location = useLocation();
+  let { from } = location.state || { from: { pathname: "/" } };
+
+  const handleGoogleSignIn = () => {
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+    firebase
+      .auth()
+      .signInWithPopup(googleProvider)
+      .then(function (result) {
+        const { displayName, email } = result.user;
+        const signInUser = { name: displayName, email };
+        setLoggedInUser(signInUser);
+        history.replace(from);
       })
-      .catch(error=>console.log(error))
-    }
-  
-    const emailPassSignupHandler=()=>{
-        firebase.auth().createUserWithEmailAndPassword(`${user.inputEmail}`, `${user.inputPassword}`)
-        .then(result => {
-          setUser({...user, isSignedUp:true})
-        })
-        .catch(error=>console.log(error))
-      }
-    
-      // sign in with email and password
-      const emailPassSigninHandler = ()=>{
-        firebase.auth().signInWithEmailAndPassword(`${user.inputEmail}`, `${user.inputPassword}`)
-        .then(result=>{
-            setUser({...user, isSignedIn:true, email:result.user.email})
-            history.location.state ? history.replace(history.location.state.pathname)
-            : history.goBack()
-          })
-        .catch(error=>console.log(error))
-      }
-    
-  
+      .catch(function (error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      });
+  };
+   
     return (
         <>
-        <FormGroup style={{width:"300px",border:'1px solid lightgray',
-      padding:'30px', borderRadius:'10px',  margin:'auto', marginTop:'20vh'}}>
-        {
-          user.isSignedUp ? <b style={{textAlign:'center'}}>Login</b>
-          : <b style={{textAlign:'center'}}>Create an Account</b>
-        }
-        <FormControl style={{marginBottom:"5px"}}>
-            <InputLabel >Email address</InputLabel>
-            <Input onBlur={(event)=>setUser({...user, inputEmail:event.target.value})}  aria-describedby="my-helper-text" />
-        </FormControl>
-        <FormControl style={{marginBottom:"15px"}}>
-            <InputLabel >Password</InputLabel>
-            <Input onBlur={(event)=>setUser({...user, inputPassword:event.target.value})} aria-describedby="my-helper-text" />
-        </FormControl>
-        {
-          user.isSignedUp? <button onClick={emailPassSigninHandler} className='blue-button'>Sign in</button>
-          :<button onClick={emailPassSignupHandler} className='blue-button'>Sign up</button>
-          
-          
-        }
-        <Grid container item justify='center' alignItems='center' onClick={googleSigninHandler}
-          style={{margin:'auto',cursor:'pointer',  width:'270px',marginTop:'20px', borderRadius:"30px", padding:'0'}} >
-          <Grid item>
-            <img style={{width:'35px', margin:'0', padding:'0'}} src={google} alt=""/>
-          </Grid>
-          <Grid style={{marginBottom:'5px', marginLeft:'10px', }} item >Continue with Google</Grid>
-        </Grid>
-
-        {
-          user.isSignedUp ? 
-            <div style={{textAlign:'center', marginTop:'10px'}}>
-            Don't have an account? 
-            <span onClick={()=>setUser({...user,isSignedUp:false})} 
-              style={{color:'#3F90FC', marginLeft:'10px',fontWeight:'400', cursor:'pointer'}}>
-              Create an account
-            </span>
-            </div>
-          : <div style={{textAlign:'center', marginTop:'10px'}}>
-              Already have an account? 
-            <span onClick={()=>setUser({...user,isSignedUp:true})} 
-              style={{color:'#3F90FC', marginLeft:'10px',fontWeight:'400', cursor:'pointer'}}>
-                Signin
-            </span>
-            </div>
-        }
-    </FormGroup>
-    {/* <button onClick={()=>setUser({...user, isSignedUp:true})}>toggle</button> */}
-      
-   </>
+        <Header></Header>
+         <Link to="/">
+        <div style={{ textAlign: "center" }}>
+          <img
+            style={{ width: "300px" }}
+            src="https://i.ibb.co/zR4wpY3/Group-1329.png"
+            alt=""
+          />
+        </div>
+      </Link>
+      <div className="log-in shadow">
+        <div style={{}} className="button">
+          <img
+            style={{ width: "25px" }}
+            className="mr-5 ml-1"
+            src="https://www.iconfinder.com/data/icons/social-media-2210/24/Google-512.png"
+            alt="google logo"
+          />
+          <button className="googleButton" onClick={handleGoogleSignIn}>
+            Continue with Google
+          </button>
+        </div>
+        <p className="text-center" style={{ marginTop: "-10rem" }}>
+          Don’t have an account?{" "}
+          <span className="text-primary">Create an account</span>
+        </p>
+      </div>
+       </>
     );
 };
 
